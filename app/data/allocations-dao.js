@@ -83,7 +83,10 @@ const AllocationsDAO = function(db){
             };
         };
 
-        allocationsCol.find(searchCriteria()).toArray((err, allocations) => {
+const searchCriteria = { /* your criteria here, ensure it's properly sanitized */ };
+allocationsCol.find(searchCriteria).toArray((err, allocations) => {
+    // handle err and allocations
+});
             if (err) return callback(err, null);
             if (!allocations.length) return callback("ERROR: No allocations found for the user", null);
 
