@@ -26,12 +26,19 @@ function ContributionsHandler(db) {
     };
 
     this.handleContributionsUpdate = (req, res, next) => {
+        // Validate input to ensure it's a number
+        if (isNaN(req.body.preTax) || isNaN(req.body.afterTax) || isNaN(req.body.roth)) {
+            return res.render("contributions", {
+                updateError: "Invalid contribution percentages",
+                userId: req.session.userId,
+                environmentalScripts
+            });
+        }
 
-        /*jslint evil: true */
-        // Insecure use of eval() to parse inputs
-        const preTax = eval(req.body.preTax);
-        const afterTax = eval(req.body.afterTax);
-        const roth = eval(req.body.roth);
+        // Securely parse inputs using parseFloat
+        const preTax = parseFloat(req.body.preTax);
+        const afterTax = parseFloat(req.body.afterTax);
+        const roth = parseFloat(req.body.roth);
 
         /*
         //Fix for A1 -1 SSJS Injection attacks - uses alternate method to eval
