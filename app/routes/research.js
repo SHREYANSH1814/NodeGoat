@@ -12,7 +12,20 @@ function ResearchHandler(db) {
     this.displayResearch = (req, res) => {
 
         if (req.query.symbol) {
-            const url = req.query.url + req.query.symbol;
+            // Validate and sanitize inputs
+            const symbol = req.query.symbol;
+            const urlBase = req.query.url;
+
+            // Basic validation: symbol should be alphanumeric and urlBase should be a known safe base URL
+            const symbolRegex = /^[a-zA-Z0-9]+$/;
+            const allowedUrlBases = ["https://example.com/api/", "https://api.example.org/"];
+
+            if (!symbolRegex.test(symbol) || !allowedUrlBases.includes(urlBase)) {
+                res.status(400).send("Invalid parameters");
+                return;
+            }
+
+            const url = urlBase + symbol;
             return needle.get(url, (error, newResponse, body) => {
                 if (!error && newResponse.statusCode === 200) {
                     res.writeHead(200, {
